@@ -2,12 +2,24 @@ import React, { useState, useEffect, useContext } from 'react'
 import styled from 'styled-components'
 import ChartsContainer from './dashboard/ChartsContainer'
 import DashboardTop from './dashboard/DashboardTop'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+import { Context } from '../../contexts/Store'
 
 function DashBoard() {
   const [isCountLoading, setCountLoading] = useState(false)
   const [lineGraphData, setLineGraphData] = useState({})
   const [dateArray, setDateArray] = useState([])
   const [studentArray, setStudentArray] = useState([])
+  const [errorMessage, setErrorMessage] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const { dispatch } = useContext(Context)
+  const [gatePass, setGatePass] = useState([])
+
+  var retrievedValue = localStorage.getItem('user_details')
+  var parsedObject = JSON.parse(retrievedValue)
+  const auth = parsedObject?.access
+  // console.log(auth, 'auth')
 
   const getShortMonthName = (date) => {
     const monthNames = [
@@ -71,6 +83,29 @@ function DashBoard() {
     },
   ]
 
+  const handleSubmit = async () => {
+    setLoading(true)
+
+    const response = await axios.get(
+      'https://conext.in/gatePass/api/gate_pass_counts/',
+      {
+        headers: {
+          Authorization: `token ${auth}`,
+        },
+      },
+    )
+    setGatePass(response.data)
+
+    setLoading(false)
+    setTimeout(() => {
+      setErrorMessage(null)
+      setLoading(false)
+    }, 3000)
+  }
+  useEffect(() => {
+    handleSubmit()
+  }, [])
+
   useEffect(() => {
     const fetchDetails = () => {
       setLineGraphData(user_data)
@@ -94,11 +129,12 @@ function DashBoard() {
     }
     fetchDetails()
   }, [])
-
+  console.log(gatePass, 'gatePass')
   return (
     <>
       <MainContainer id="main">
         <Cover>
+          <Heading>DashBoard</Heading>
           <ChartsContainer
             enrolledStudents={'100'}
             onProgress={'70'}
@@ -106,6 +142,7 @@ function DashBoard() {
             courseCompleted={'10'}
             studentArr={studentArray}
             dateArr={dateArray}
+            gatePass={gatePass}
           />
           <DashboardTop
             isCountLoading={isCountLoading}
@@ -114,6 +151,7 @@ function DashBoard() {
             enrolledStudents={'100'}
             notEnrolleStudents={'30'}
             courseCompleted={'10'}
+            gatePass={gatePass}
           />
         </Cover>
       </MainContainer>
@@ -128,6 +166,9 @@ const MainContainer = styled.div`
   margin: 0 auto;
   padding: 50px 0;
 `
-const Cover = styled.div`
-  /* padding: 0 12px; */
+const Cover = styled.div``
+const Heading = styled.h3`
+  color: #000;
+  font-size: 28px;
+  font-weight: 600;
 `

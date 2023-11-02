@@ -1,68 +1,52 @@
 import React from 'react'
 import { Line } from 'react-chartjs-2'
 import { Chart, registerables } from 'chart.js'
-import styled from 'styled-components'
 
-function LineChart({ studentArr, dateArr }) {
+function LineChart({ data }) {
   Chart.register(...registerables)
+  // Extract data from the object
+  const labels = Object.keys(data)
+  const values = Object.values(data)
 
-  const data = {
-    labels: dateArr,
-
+  // Create the dataset
+  const dataset = {
+    labels: labels,
     datasets: [
       {
-        label: 'Students',
-        data: studentArr,
+        label: 'Gatepass Counts',
+        data: values,
         fill: true,
-        backgroundColor: '#ef8637c9',
+        backgroundColor: 'rgba(239, 134, 55, 0.79)',
         borderColor: '#ef8637',
         tension: 0.5,
       },
     ],
   }
 
+  // Chart options
   const options = {
-    plugins: {
-      drawBorder: false,
-      title: {
-        display: false,
-        text: '',
-      },
-    },
-
-    layout: {
-      padding: 20,
-    },
     responsive: true,
     scales: {
       x: {
-        stacked: true,
+        type: 'category', // Use 'category' scale for x-axis
         grid: {
           display: false,
         },
       },
       y: {
-        stacked: true,
+        type: 'linear', // Use 'linear' scale for y-axis
+        beginAtZero: true, // Depending on your data, you may need to adjust other scale options
         grid: {
           display: false,
         },
       },
     },
   }
-
   return (
-    <Container>
-      <Line data={data} options={options} />
-    </Container>
+    <div>
+      <Line data={dataset} options={options} />
+    </div>
   )
 }
 
 export default LineChart
-
-const Container = styled.div`
-  canvas {
-    /* height: 225px !important; */
-    width: 100% !important;
-    margin: 0 auto;
-  }
-`

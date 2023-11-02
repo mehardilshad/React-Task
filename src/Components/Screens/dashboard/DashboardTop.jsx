@@ -6,7 +6,7 @@ import ebook from '../../../assets/images/ebook.png'
 import green from '../../../assets/images/task/active-students.svg'
 import peach from '../../../assets/images/task/our-team.svg'
 import blue from '../../../assets/images/task/students.svg'
-import yellow from '../../../assets/images/task/completed.svg'
+import yellow from '../../../assets/images/task/cancelled.svg'
 import ButtonLoader from '../../Loader/ButtonLoader'
 
 function DashboardTop({
@@ -16,45 +16,63 @@ function DashboardTop({
   enrolledStudents,
   notEnrolleStudents,
   courseCompleted,
+  gatePass,
 }) {
+  console.log(gatePass.applied_gatepass_count, 'applied_gatepass_count')
+  console.log(gatePass.approved_gatepass_count, 'approved_gatepass_count')
+  console.log(gatePass.processing_gatepass_count, 'processing_gatepass_count')
+  console.log(gatePass.rejected_gatepass_count, 'rejected_gatepass_count')
+
   return (
     <MainContainer>
-      <Heading>Info</Heading>
+      <Heading> GatePass Info</Heading>
       <TopContainer id={id}>
-        <Card to={'/students'}>
-          <ImageContainer>
-            <Logo src={green} />
-          </ImageContainer>
-          <Description>
-            <p>{enrolledStudents}</p>
-            <h3>Enrolled Students</h3>
-          </Description>
-        </Card>
-        <Card to={'/students'}>
-          <ImageContainer>
-            <Logo src={peach} />
-          </ImageContainer>
-          <Description>
-            {isCountLoading ? <ButtonLoader /> : <p>{notEnrolleStudents}</p>}
-            <h3>Exam Completed</h3>
-          </Description>
-        </Card>
-        <Card type="not_active" to="">
+        <Card>
           <ImageContainer>
             <Logo src={blue} />
           </ImageContainer>
           <Description>
-            {isCountLoading ? <ButtonLoader /> : <p>{totalStudentsCount}</p>}
-            <h3>Total Applied Students</h3>
+            <p>{gatePass.applied_gatepass_count}</p>
+            <h3>Applied gatepass Count</h3>
           </Description>
         </Card>
-        <Card to={'/students'}>
+        <Card>
+          <ImageContainer>
+            <Logo src={green} />
+          </ImageContainer>
+          <Description>
+            {isCountLoading ? (
+              <ButtonLoader />
+            ) : (
+              <p>{gatePass.approved_gatepass_count}</p>
+            )}
+            <h3>Approved gatepass Count</h3>
+          </Description>
+        </Card>
+        <Card>
+          <ImageContainer>
+            <Logo src={peach} />
+          </ImageContainer>
+          <Description>
+            {isCountLoading ? (
+              <ButtonLoader />
+            ) : (
+              <p>{gatePass.processing_gatepass_count}</p>
+            )}
+            <h3>Processing gatepass Count</h3>
+          </Description>
+        </Card>
+        <Card>
           <ImageContainer>
             <Logo src={yellow} />
           </ImageContainer>
           <Description>
-            {isCountLoading ? <ButtonLoader /> : <p>{courseCompleted}</p>}
-            <h3>Course Completed</h3>
+            {isCountLoading ? (
+              <ButtonLoader />
+            ) : (
+              <p>{gatePass.rejected_gatepass_count}</p>
+            )}
+            <h3>rejected gatepass Count</h3>
           </Description>
         </Card>
       </TopContainer>
@@ -76,6 +94,7 @@ const Heading = styled.h3`
   /* font-family: 'gordita_medium'; */
   font-size: 18px;
   margin: 30px 0 15px;
+  padding: 0 15px;
 `
 const TopContainer = styled.div`
   width: 100%;
@@ -97,7 +116,7 @@ const TopContainer = styled.div`
     grid-template-columns: 1fr;
   }
 `
-const Card = styled(Link)`
+const Card = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;

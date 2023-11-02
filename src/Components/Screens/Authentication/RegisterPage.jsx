@@ -3,59 +3,16 @@ import styled from 'styled-components'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { Context } from '../../../contexts/Store'
-import { general } from '../../../axiosConfig'
 
 function RegisterPage() {
-  const [checked, setChecked] = useState()
   const [email, setEmail] = useState('')
   const [number, setNumber] = useState('')
   const [otp, setOTP] = useState('')
-
-  const [id, setId] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
-  const [country, setCountry] = useState([])
   const [loading, setLoading] = useState(false)
-
   const [viewPassword, setViewPassword] = useState(false)
   const [password, SetPassword] = useState('') // Add loading state
-
-  const [code, setCode] = useState({
-    country_code: '+91',
-    flag:
-      'https://api.mindmitra.talrop.works/media/countries/flags/indian-flag.jpeg',
-    id: 1,
-    name: 'India',
-    phone_code: '+91',
-    phone_number_length: 10,
-    web_code: 'IN',
-  })
-  const { dispatch } = useContext(Context)
   const navigate = useNavigate()
-
-  useEffect(() => {
-    let user_details = localStorage.getItem('user_details')
-    user_details = JSON.parse(user_details)
-    dispatch({ type: 'UPDATE_USER', user_details: user_details })
-  }, [])
-
-  //   useEffect(() => {
-  //     general
-  //       .get('/countries/')
-  //       .then((response) => {
-  //         const { StatusCode, data } = response.data
-  //         // handle success
-  //         console.log(response.data)
-  //         setCountry(data)
-  //       })
-  //       .catch(function (error) {
-  //         // handle error
-  //         console.log(error)
-  //       })
-  //   }, [id])
-
-  const renderContries = () => {
-    return country.map((country) => <div>{country.country_code}</div>)
-  }
 
   const handleInputChange = (e) => {
     let inputValue = e.target.value
@@ -73,59 +30,41 @@ function RegisterPage() {
   }
   const handleIChange = (e) => {
     let inputValue = e.target.value
-    // Remove non-digit characters and limit to 10 digits
-    // inputValue = inputValue.replace(/\D/g, '').slice(0, 10)
-
     setEmail(inputValue)
   }
 
-  const handleSubmit = async (e) => {
-    // e.preventDefault()
+  const handleSubmit = async () => {
     setLoading(true)
 
-    if (number.length === code.phone_number_length) {
-      if (code.country_code === '+91') {
-        try {
-          const response = await general.post('/signup/', {
-            phone: number,
-            country: code.web_code,
-          })
+    if (email && password && number && otp) {
+      const response = await axios.post(
+        ' https://conext.in/custom_users/api/register/',
+        {
+          password: password,
+          email: email,
+          organization: number,
+          otp: otp,
+        },
+      )
+      console.log(response.data)
 
-          const { StatusCode } = response.data
-
-          if (StatusCode == '6000') {
-            const user_details = {
-              phone: number,
-            }
-            dispatch({
-              type: 'UPDATE_USER',
-              user_details,
-            })
-            navigate('/staff-profile')
-          }
-        } catch (error) {
-          console.error('Error creating post sss:', error.response)
-          console.log(error)
-          navigate('/')
-          setErrorMessage(
-            'An error occurred while registering. Please try again.',
-          )
-        }
-      } else {
-        setErrorMessage('Invalid country code')
-      }
+      console.log(response)
+      navigate('/login-page')
     } else {
-      setErrorMessage('Please enter a valid Email.')
+      setErrorMessage('Please fill in the following fields')
     }
-
     setLoading(false)
-
-    // Remove the error message after 5 seconds
     setTimeout(() => {
       setErrorMessage(null)
+      setLoading(false)
     }, 3000)
   }
-
+  useEffect(() => {
+    setTimeout(() => {
+      setErrorMessage(null)
+      setLoading(false)
+    }, 6000)
+  }, [])
   return (
     <>
       <Main>
@@ -180,7 +119,7 @@ function RegisterPage() {
                 onChange={handleIChange}
               />
             </InputBox>
-            {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
+
             <InputBox className="number">
               <input
                 type="tel"
@@ -195,7 +134,6 @@ function RegisterPage() {
             <InputBox className="number">
               <input
                 type="tel"
-                // id="Mobile"
                 maxLength={4}
                 className="active"
                 placeholder="Enter OTP"
@@ -203,11 +141,11 @@ function RegisterPage() {
                 onChange={handleOTP}
               />
             </InputBox>
+            {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
             <ButtonBox
               type="submit"
               onClick={() => {
                 handleSubmit()
-                navigate('/staff-profile')
               }}
             >
               {loading ? 'Loading...' : 'Register'}
@@ -221,8 +159,11 @@ function RegisterPage() {
 
 export default RegisterPage
 const Main = styled.div`
-  padding: 50px 0 50px 0;
+  padding: 50px 0;
   height: 100vh;
+  @media all and (max-width: 1080px) {
+    padding: 50px 0;
+  }
 `
 const Wrapper = styled.div`
   display: flex;
@@ -231,29 +172,30 @@ const Wrapper = styled.div`
   gap: 100px;
   width: 90%;
   margin: 0 auto;
-  @media all and (max-width: 980px) {
+  @media all and (max-width: 1080px) {
     flex-direction: column-reverse;
+    gap: 10px;
   }
 `
 const Left = styled.div`
   width: 55%;
-  /* margin: 95px 0 0 0px; */
-  @media all and (max-width: 1440px) {
-    /* width: 60%; */
+  @media all and (max-width: 1280px) {
+    width: 65%;
   }
-  @media all and (max-width: 1050px) {
-    width: 64%;
-  }
-  @media all and (max-width: 980px) {
+  @media all and (max-width: 1080px) {
     width: 75%;
+    margin-bottom: 50px;
+  }
+  @media all and (max-width: 640px) {
+    width: 85%;
+  }
+  @media all and (max-width: 480px) {
+    width: 90%;
   }
 `
 const ImageBox = styled.div`
   align-items: center;
   width: 100%;
-  /* @media all and (max-width: 1440px) {
-    width: 90%;
-  } */
   @media all and (max-width: 980px) {
     width: 100%;
   }
@@ -263,27 +205,32 @@ const ImageBox = styled.div`
   }
 `
 const Right = styled.div`
-  /* margin: 140px 0 0 0; */
   width: 40%;
-  @media all and (max-width: 1440px) {
-    /* margin: 140px 0 0 0; */
-    /* width: 36%; */
+  @media all and (max-width: 1280px) {
+    width: 50%;
+  }
+  @media all and (max-width: 1080px) {
+    width: 75%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
   @media all and (max-width: 980px) {
-    width: 75%;
   }
-`
-const LogoBox = styled.div`
-  width: 16%;
-  /* margin-bottom: 20px; */
+
+  @media all and (max-width: 640px) {
+    width: 85%;
+  }
+  @media all and (max-width: 480px) {
+    width: 90%;
+  }
 `
 const TopText = styled.div``
 const Titile = styled.h5`
   font-size: 24px;
   font-weight: 500;
   margin: 30px 0 7px 0;
-
-  /* font-family: "dm_sans_bold"; */
   @media all and (max-width: 1440px) {
     margin-top: 15px;
   }
@@ -291,26 +238,8 @@ const Titile = styled.h5`
     font-size: 22px;
   }
 `
-const SubTitile = styled.p`
-  color: #7a838a;
-  font-size: 16px;
-  font-weight: 300;
-  line-height: 20px;
-  @media all and (max-width: 1050px) {
-    font-size: 14px;
-  }
-`
-const Bar = styled.p`
-  margin: 0;
-  color: #dededf;
-  margin-left: 5px;
-  border-right: 1px solid #dededf;
-  width: 5px;
-  height: 20px;
-`
 const InputBox = styled.div`
   background-color: #f6f7f9;
-  /* height: 40px; */
   display: flex;
   border-radius: 8px;
   font-size: 18px;
@@ -322,21 +251,13 @@ const InputBox = styled.div`
   &.number {
     margin-top: 20px;
   }
-  /* @media all and (max-width: 1440px) {
-    margin-top: 25px;
-    margin-bottom: 10px;
-
-    height: 35px;
-  } */
-  @media all and (max-width: 1280px) {
-    height: 30px;
+  @media all and (max-width: 640px) {
+    width: 100%;
   }
 
   input {
     border: none;
-    /* background-color: #f6f7f9; */
     padding-left: 10px;
-    /* height: 20px; */
     font-size: 18px;
     width: 100%;
     cursor: pointer;
@@ -345,7 +266,6 @@ const InputBox = styled.div`
     }
     :focus {
       outline: none;
-      /* border: 1px solid red; */
     }
 
     ::placeholder {
@@ -366,39 +286,22 @@ const ButtonBox = styled.button`
   border: none;
   font-size: 18px;
   cursor: pointer;
-  @media all and (max-width: 1050px) {
-    padding: 15px 130px;
+  @media all and (max-width: 640px) {
+    width: 100%;
   }
 `
-const Log = styled(Link)`
-  color: #2b3990;
-  text-decoration: none;
-`
-const Expert = styled.h5`
-  font-size: 16px;
-  font-weight: 300;
-  cursor: pointer;
-  text-align: center;
-  color: #818181;
-  margin-top: 20px;
-  width: 80%;
-  /* @media all and (max-width: 1440px) {
-    margin-top: 11%;
-  } */
-`
+
 const ErrorText = styled.p`
   color: red;
   font-size: 14px;
   margin-top: 10px;
 `
 const PassBox = styled.div`
-  /* margin-top: 5px; */
   display: flex;
   justify-content: center;
   align-items: center;
 `
 const Eye = styled.div`
-  /* margin-right: 15px; */
   display: flex;
   justify-content: center;
   align-items: center;

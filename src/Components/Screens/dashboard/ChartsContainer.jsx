@@ -12,6 +12,7 @@ function ChartsContainer({
   studentArr,
   dateArr,
   campus_id,
+  gatePass,
 }) {
   const items = [
     {
@@ -33,36 +34,61 @@ function ChartsContainer({
       name: 'progress',
     },
   ]
+
+  const gatePassData = {
+    applied_gatepass_count: 56432,
+    approved_gatepass_count: 25289,
+    processing_gatepass_count: 14345,
+    rejected_gatepass_count: 18897,
+  }
   return (
     <MainContainer>
       {/* <Heading>Dashboard</Heading> */}
       <Cover>
         <LineChartContainer>
           <Top>
-            <Heading>Admissions</Heading>
+            <Heading>Gatepass Counts Over Time</Heading>
           </Top>
           <LineCard>
-            <LineChart studentArr={studentArr} dateArr={dateArr} />
+            <LineChart data={gatePassData} />
           </LineCard>
         </LineChartContainer>
         <BarChartContainer>
           <Heading>Students Status</Heading>
           <Card>
             <TopSection>
-              <Title>Enrolled Students</Title>
-              <TotalCount to={`/students`}>{enrolledStudents}</TotalCount>
+              <Title>Gate pass Count</Title>
             </TopSection>
             <BottomSection>
               <LeftSection>
-                {items.map((item, index) => (
-                  <Section key={item.id} to={`/students`}>
-                    <Circle type={item.name}></Circle>
-                    <CountSection>
-                      <Count>{item.count}</Count>
-                      <Para>({item.title})</Para>
-                    </CountSection>
-                  </Section>
-                ))}
+                <Section>
+                  <Circle></Circle>
+                  <CountSection>
+                    <Para>Applied gatepass Count</Para>
+                    <Count>{gatePass.applied_gatepass_count}</Count>
+                  </CountSection>
+                </Section>
+                <Section>
+                  <Circle></Circle>
+                  <CountSection>
+                    <Para>Approved gatepass Count</Para>
+                    <Count>{gatePass.approved_gatepass_count}</Count>
+                  </CountSection>
+                </Section>
+                <Section>
+                  <Circle></Circle>
+                  <CountSection>
+                    <Para>Processing gatepass Count</Para>
+                    <Count>{gatePass.processing_gatepass_count}</Count>
+                  </CountSection>
+                </Section>
+                <Section>
+                  <Circle></Circle>
+                  <CountSection>
+                    <Para>rejected gatepass Count</Para>
+                    <Count>{gatePass.rejected_gatepass_count}</Count>
+                  </CountSection>
+                </Section>
               </LeftSection>
               {enrolledStudents > 0 && (
                 <RightSection>
@@ -71,6 +97,7 @@ function ChartsContainer({
                     onProgress={onProgress}
                     examCompleted={examCompleted}
                     courseCompleted={courseCompleted}
+                    data={gatePassData}
                   />
                 </RightSection>
               )}
@@ -183,7 +210,7 @@ const TopSection = styled.div`
   padding-bottom: 10px;
   border-bottom: 1px solid #4e5053;
 `
-const Section = styled(Link)`
+const Section = styled.div`
   margin-bottom: 10px;
   display: flex;
   align-items: flex-start;
@@ -211,9 +238,9 @@ const CountSection = styled.div`
 const Count = styled.p`
   color: #000;
   margin-bottom: 10px;
-  font-family: 'gordita_medium';
+  /* font-family: 'gordita_medium'; */
   font-size: 14px;
-  margin-right: 20px;
+  margin-left: 10px;
 `
 const Para = styled.p`
   color: #000;
