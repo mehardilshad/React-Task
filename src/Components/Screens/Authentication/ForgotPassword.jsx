@@ -28,8 +28,7 @@ function ForgotPassword() {
           email_address: email,
         },
       )
-      console.log(response.data)
-
+      console.log(response.data.message)
       if (response.data.status === true) {
         navigate('/otp-page')
       } else {

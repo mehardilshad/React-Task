@@ -15,33 +15,45 @@ function LoginPage() {
   const [password, SetPassword] = useState('')
   const { dispatch } = useContext(Context)
   const [data, SetData] = useState([])
+  const [errorMessage, setErrorMessage] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    general
-      .post('/login/', {
-        username,
-        password,
-      })
-      .then(function (response) {
-        const { StatusCode } = response.data
-        console.log(response.data.token)
-        const user_details = {
-          is_verified: true,
-          role: '',
-          access: response.data.token,
-        }
-        dispatch({
-          type: 'UPDATE_USER',
-          user_details,
+    // e.preventDefault()
+
+    if (username && password) {
+      general
+        .post('/login/', {
+          username,
+          password,
         })
-        SetData(response.data.token)
-        navigate('/staff-profile')
-      })
-      .catch(function (error) {
-        console.log(error)
-        navigate('/login-page')
-      })
+        .then(function (response) {
+          const { StatusCode } = response.data
+          console.log(response.data.token)
+          const user_details = {
+            is_verified: true,
+            role: '',
+            access: response.data.token,
+          }
+          dispatch({
+            type: 'UPDATE_USER',
+            user_details,
+          })
+          SetData(response.data.token)
+          navigate('/staff-profile')
+        })
+        .catch(function (error) {
+          console.log(error.response.data.non_field_errors)
+          setErrorMessage(error.response.data.non_field_errors)
+          navigate('/login-page')
+        })
+    } else {
+      setErrorMessage('Please enter a valid Email.')
+    }
+    setLoading(false)
+    setTimeout(() => {
+      setErrorMessage(null)
+    }, 3000)
   }
 
   return (
@@ -109,7 +121,7 @@ function LoginPage() {
               />
             </Eye>
           </InputBox>
-
+          {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
           <For to="/forgot-password">Forget Password?</For>
           <ButtonBox onClick={handleSubmit}>Login</ButtonBox>
           <Expert>
@@ -337,4 +349,9 @@ const For = styled(Link)`
   @media all and (max-width: 640px) {
     width: 100%;
   }
+`
+const ErrorText = styled.p`
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
 `

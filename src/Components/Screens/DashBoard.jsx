@@ -16,6 +16,8 @@ function DashBoard() {
   const { dispatch } = useContext(Context)
   const [gatePass, setGatePass] = useState([])
 
+  const [is_verified, setVerified] = useState(true)
+
   var retrievedValue = localStorage.getItem('user_details')
   var parsedObject = JSON.parse(retrievedValue)
   const auth = parsedObject?.access
@@ -83,29 +85,51 @@ function DashBoard() {
     },
   ]
 
+  // const handleSubmit = async () => {
+  //   setLoading(true)
+
+  //   const response = await axios.get(
+  //     'https://conext.in/gatePass/api/gate_pass_counts/',
+  //     {
+  //       headers: {
+  //         Authorization: `token ${auth}`,
+  //       },
+  //     },
+  //   )
+  //   setGatePass(response.data)
+  //   setLoading(false)
+  //   setTimeout(() => {
+  //     setErrorMessage(null)
+  //     setLoading(false)
+  //   }, 3000)
+  // }
+
   const handleSubmit = async () => {
     setLoading(true)
 
-    const response = await axios.get(
-      'https://conext.in/gatePass/api/gate_pass_counts/',
-      {
-        headers: {
-          Authorization: `token ${auth}`,
+    if (auth) {
+      const response = await axios.get(
+        'https://conext.in/gatePass/api/gate_pass_counts/',
+        {
+          headers: {
+            Authorization: `token ${auth}`,
+          },
         },
-      },
-    )
-    setGatePass(response.data)
-
+      )
+      setGatePass(response.data)
+      setLoading(false)
+    } else {
+      setErrorMessage('Please enter a valid Email.')
+      setVerified(false)
+    }
     setLoading(false)
     setTimeout(() => {
       setErrorMessage(null)
-      setLoading(false)
     }, 3000)
   }
   useEffect(() => {
     handleSubmit()
   }, [])
-
   useEffect(() => {
     const fetchDetails = () => {
       setLineGraphData(user_data)
@@ -135,24 +159,34 @@ function DashBoard() {
       <MainContainer id="main">
         <Cover>
           <Heading>DashBoard</Heading>
-          <ChartsContainer
-            enrolledStudents={'100'}
-            onProgress={'70'}
-            examCompleted={'30'}
-            courseCompleted={'10'}
-            studentArr={studentArray}
-            dateArr={dateArray}
-            gatePass={gatePass}
-          />
-          <DashboardTop
-            isCountLoading={isCountLoading}
-            totalCount={'350'}
-            totalStudentsCount={'350'}
-            enrolledStudents={'100'}
-            notEnrolleStudents={'30'}
-            courseCompleted={'10'}
-            gatePass={gatePass}
-          />
+          {auth ? (
+            <ChartsContainer
+              enrolledStudents={'100'}
+              onProgress={'70'}
+              examCompleted={'30'}
+              courseCompleted={'10'}
+              studentArr={studentArray}
+              dateArr={dateArray}
+              gatePass={gatePass}
+            />
+          ) : (
+            <div className="nodata">
+              No data Available <br></br> Please login to see the datas
+            </div>
+          )}
+          {auth ? (
+            <DashboardTop
+              isCountLoading={isCountLoading}
+              totalCount={'350'}
+              totalStudentsCount={'350'}
+              enrolledStudents={'100'}
+              notEnrolleStudents={'30'}
+              courseCompleted={'10'}
+              gatePass={gatePass}
+            />
+          ) : (
+            <div className="nodata"></div>
+          )}
         </Cover>
       </MainContainer>
     </>
@@ -166,7 +200,13 @@ const MainContainer = styled.div`
   margin: 0 auto;
   padding: 50px 0;
 `
-const Cover = styled.div``
+const Cover = styled.div`
+  div.nodata {
+    padding: 100px;
+    font-size: 24px;
+    text-align: center;
+  }
+`
 const Heading = styled.h3`
   color: #000;
   font-size: 28px;
