@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/React-Task/static/css/main.2dc493dc.css",
-    "main.js": "/React-Task/static/js/main.be718abb.js",
+    "main.js": "/React-Task/static/js/main.816e6e9a.js",
     "static/js/787.a5a00b74.chunk.js": "/React-Task/static/js/787.a5a00b74.chunk.js",
     "static/media/image.png": "/React-Task/static/media/image.f483527b2b84c37c9e8f.png",
     "static/media/login.jpg": "/React-Task/static/media/login.9b8f7eef3fb225d15fbd.jpg",
@@ -18,11 +18,11 @@
     "static/media/lock.svg": "/React-Task/static/media/lock.c0ff932f07f64b0f46e62b60c79f389f.svg",
     "index.html": "/React-Task/index.html",
     "main.2dc493dc.css.map": "/React-Task/static/css/main.2dc493dc.css.map",
-    "main.be718abb.js.map": "/React-Task/static/js/main.be718abb.js.map",
+    "main.816e6e9a.js.map": "/React-Task/static/js/main.816e6e9a.js.map",
     "787.a5a00b74.chunk.js.map": "/React-Task/static/js/787.a5a00b74.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.2dc493dc.css",
-    "static/js/main.be718abb.js"
+    "static/js/main.816e6e9a.js"
   ]
 }
