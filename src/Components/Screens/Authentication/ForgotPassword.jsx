@@ -13,10 +13,8 @@ function ForgotPassword() {
 
   const handleIChange = (e) => {
     let inputValue = e.target.value
-
     setEmail(inputValue)
   }
-
   const handleSubmit = async () => {
     setLoading(true)
 
