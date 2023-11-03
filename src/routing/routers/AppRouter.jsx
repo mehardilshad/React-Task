@@ -1,7 +1,7 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import DashBoard from '../../Components/Screens/DashBoard'
-import Login from '../../Components/Screens/Authentication/Login'
+import Login from '../../Components/Screens/Authentication/LoginPage'
 import VerifyMail from '../../Components/Screens/Authentication/VerifyMail'
 import RegisterPage from '../../Components/Screens/Authentication/RegisterPage'
 import StaffProfile from '../../Components/Screens/Authentication/StaffProfile'
