@@ -6,7 +6,7 @@ import Store from './contexts/Store'
 
 function App() {
   return (
-    <Router>
+    <Router basename="/React-Task">
       <Store>
         <MainRouter />
       </Store>
